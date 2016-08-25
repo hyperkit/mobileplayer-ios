@@ -10,13 +10,13 @@ import UIKit
 
 class ExampleViewController: UIViewController {
   let codeImageView = UIImageView(frame: CGRect.zero)
-  let videoURL = URL(string: "https://www.youtube.com/watch?v=eBC33Pqxj-s")!
+  let videoURL = URL(string: "https://www.youtube.com/watch?v=sGbxmsDFVnE")!
   let videoTitle = "Star Wars: Episode VII - The Force Awakens - International Trailer"
   let videoID = "1"
 
   init() {
     super.init(nibName: nil, bundle: nil)
-    navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Show Player", style: .plain, target: self, action: "showButtonDidGetTapped")
+    navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Show Player", style: .plain, target: self, action: #selector(ExampleViewController.showButtonDidGetTapped))
   }
 
   required init?(coder aDecoder: NSCoder) {

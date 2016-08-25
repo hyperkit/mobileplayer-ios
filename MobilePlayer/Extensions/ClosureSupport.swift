@@ -11,7 +11,7 @@ import UIKit
 class CallbackContainer {
   let callback: () -> Void
 
-  init(callback: () -> Void) {
+  init(callback: @escaping () -> Void) {
     self.callback = callback
   }
 
@@ -22,7 +22,7 @@ class CallbackContainer {
 
 extension Timer {
 
-  class func scheduledTimerWithTimeInterval(_ ti: TimeInterval, callback: () -> Void, repeats: Bool) -> Timer {
+  class func scheduledTimerWithTimeInterval(_ ti: TimeInterval, callback: @escaping () -> Void, repeats: Bool) -> Timer {
     let callbackContainer = CallbackContainer(callback: callback)
     return scheduledTimer(
       timeInterval: ti,
@@ -35,15 +35,16 @@ extension Timer {
 
 extension UIControl {
 
-  func addCallback(_ callback: () -> Void, forControlEvents controlEvents: UIControlEvents) -> UnsafePointer<Void> {
+  func addCallback(_ callback: @escaping () -> Void, forControlEvents controlEvents: UIControlEvents) -> UnsafeRawPointer {
     let callbackContainer = CallbackContainer(callback: callback)
-    let key = unsafeAddress(of: callbackContainer)
+    let key = Unmanaged.passUnretained(callbackContainer).toOpaque()
+//    let key = unsafeAddress(of: callbackContainer)
     objc_setAssociatedObject(self, key, callbackContainer, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     addTarget(callbackContainer, action: #selector(CallbackContainer.callCallback), for: controlEvents)
-    return key
+    return UnsafeRawPointer(key)
   }
 
-  func removeCallbackForKey(_ key: UnsafePointer<Void>) {
+  func removeCallbackForKey(_ key: UnsafeRawPointer) {
     if let callbackContainer = objc_getAssociatedObject(self, key) as? CallbackContainer {
       removeTarget(callbackContainer, action: #selector(CallbackContainer.callCallback), for: .allEvents)
       objc_setAssociatedObject(self, key, nil, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
@@ -53,12 +54,13 @@ extension UIControl {
 
 extension UIGestureRecognizer {
 
-  convenience init(callback: () -> Void) {
+  convenience init(callback: @escaping () -> Void) {
     let callbackContainer = CallbackContainer(callback: callback)
     self.init(target: callbackContainer, action: #selector(CallbackContainer.callCallback))
     objc_setAssociatedObject(
       self,
-      unsafeAddress(of: callbackContainer),
+      Unmanaged.passUnretained(callbackContainer).toOpaque(),
+      //unsafeAddress(of: callbackContainer),
       callbackContainer,
       objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
   }

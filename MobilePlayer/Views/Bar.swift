@@ -63,9 +63,8 @@ class Bar: UIView {
     case .Unknown:
       elementView = nil
     }
-    if let
-      elementView = elementView,
-      element = elementView as? Element {
+    if let elementView = elementView,
+        let element = elementView as? Element {
         addSubview(elementView)
         elements.append(element)
         setNeedsLayout()

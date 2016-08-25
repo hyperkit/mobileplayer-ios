@@ -47,7 +47,7 @@ public class SliderConfig: ElementConfig {
 
   /// Initializes using default values.
   public convenience init() {
-    self.init(dictionary: [String: AnyObject]())
+    self.init(dictionary: [String: Any]())
   }
 
   /// Initializes using a dictionary.
@@ -66,7 +66,7 @@ public class SliderConfig: ElementConfig {
   ///
   /// - parameters:
   ///   - dictionary: Toggle button configuration dictionary.
-  public override init(dictionary: [String: AnyObject]) {
+  public override init(dictionary: [String: Any]) {
     trackHeight = (dictionary["trackHeight"] as? CGFloat) ?? 6
     trackCornerRadius = (dictionary["trackCornerRadius"] as? CGFloat) ?? 3
 
@@ -91,7 +91,7 @@ public class SliderConfig: ElementConfig {
     if let thumbTintColorHex = dictionary["thumbTintColor"] as? String {
       thumbTintColor = UIColor(hex: thumbTintColorHex)
     } else {
-      thumbTintColor = UIColor.white()
+      thumbTintColor = UIColor.white
     }
 
     thumbWidth = (dictionary["thumbWidth"] as? CGFloat) ?? 16
@@ -102,7 +102,7 @@ public class SliderConfig: ElementConfig {
     if let thumbBorderColorHex = dictionary["thumbBorderColor"] as? String {
       thumbBorderColor = UIColor(hex: thumbBorderColorHex).cgColor
     } else {
-      thumbBorderColor = UIColor.clear().cgColor
+      thumbBorderColor = UIColor.clear.cgColor
     }
 
     super.init(dictionary: dictionary)

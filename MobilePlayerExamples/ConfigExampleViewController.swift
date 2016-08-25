@@ -23,8 +23,8 @@ class ConfigExampleViewController: ExampleViewController {
 
   override func showButtonDidGetTapped() {
     let bundle = Bundle.main
-    let config = MobilePlayerConfig(fileURL: bundle.urlForResource(
-      "WatermarkedPlayer",
+    let config = MobilePlayerConfig(fileURL: bundle.url(
+        forResource: "WatermarkedPlayer",
       withExtension: "json")!)
     let playerVC = MobilePlayerViewController(
       contentURL: videoURL,

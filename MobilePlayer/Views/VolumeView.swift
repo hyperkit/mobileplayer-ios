@@ -9,8 +9,8 @@
 import UIKit
 import MediaPlayer
 
-private let defaultIncreaseVolumeTintColor = UIColor.black()
-private let defaultReduceVolumeTintColor = UIColor.black()
+private let defaultIncreaseVolumeTintColor = UIColor.black
+private let defaultReduceVolumeTintColor = UIColor.black
 
 class VolumeView: UIView {
   let volumeSlider = MPVolumeView(frame: CGRect(x: -22, y: 50, width: 110, height: 50))
@@ -22,10 +22,10 @@ class VolumeView: UIView {
     reduceVolumeTintColor: UIColor = defaultReduceVolumeTintColor) {
       super.init(frame: CGRect.zero)
       layer.cornerRadius = 5
-      layer.borderColor = UIColor.gray().cgColor
+      layer.borderColor = UIColor.gray.cgColor
       layer.borderWidth = 0.5
       layer.masksToBounds = true
-      backgroundColor = UIColor.white()
+      backgroundColor = UIColor.white
       volumeSlider.transform = CGAffineTransform(rotationAngle: CGFloat(-M_PI_2))
       volumeSlider.showsRouteButton = false
       addSubview(volumeSlider)

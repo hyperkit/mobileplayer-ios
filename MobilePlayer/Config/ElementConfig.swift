@@ -78,7 +78,7 @@ public class ElementConfig {
 
   /// Initializes using default values.
   public convenience init() {
-    self.init(dictionary: [String: AnyObject]())
+    self.init(dictionary: [String: Any]())
   }
 
   /// Initializes using a dictionary.
@@ -93,10 +93,10 @@ public class ElementConfig {
   ///
   /// - parameters:
   ///   - dictionary: Element configuration dictionary.
-  public init(dictionary: [String: AnyObject]) {
+  public init(dictionary: [String: Any]) {
     if let
       elementTypeString = dictionary["type"] as? String,
-      elementType = ElementType(rawValue: elementTypeString) {
+      let elementType = ElementType(rawValue: elementTypeString) {
         type = elementType
     } else {
       type = .Unknown
@@ -107,9 +107,8 @@ public class ElementConfig {
 
     let isTitleLabel = (type == .Label && id == "title")
     let isPlaybackSlider = (type == .Slider && id == "playback")
-    if let
-      elementWidthCalculationString = dictionary["widthCalculation"] as? String,
-      elementWidthCalculation = ElementWidthCalculation(rawValue: elementWidthCalculationString) {
+    if let elementWidthCalculationString = dictionary["widthCalculation"] as? String,
+        let elementWidthCalculation = ElementWidthCalculation(rawValue: elementWidthCalculationString) {
         widthCalculation = elementWidthCalculation
     } else if isTitleLabel || isPlaybackSlider {
       widthCalculation = .Fill

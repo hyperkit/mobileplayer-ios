@@ -24,18 +24,18 @@ class BuyOverlayViewController: MobilePlayerOverlayViewController {
     super.init(nibName: nil, bundle: nil)
     descriptionLabel.text = product.description
     descriptionLabel.numberOfLines = 2
-    descriptionLabel.textColor = UIColor.white()
+    descriptionLabel.textColor = UIColor.white
     descriptionLabel.font = UIFont.systemFont(ofSize: 8, weight: UIFontWeightHeavy)
     containerView.addSubview(descriptionLabel)
     nameLabel.text = product.name
-    nameLabel.textColor = UIColor.white()
+    nameLabel.textColor = UIColor.white
     nameLabel.font = UIFont.systemFont(ofSize: 7, weight: UIFontWeightUltraLight)
     containerView.addSubview(nameLabel)
     buyButton.setTitle("Get Now", for: .normal)
     buyButton.titleLabel?.font = UIFont.systemFont(ofSize: 8, weight: UIFontWeightBold)
     buyButton.backgroundColor = UIColor(red: 0.85, green: 0.12, blue: 0.09, alpha: 1)
     buyButton.layer.cornerRadius = 4
-    buyButton.addTarget(self, action: "buyButtonDidGetTapped", for: .touchUpInside)
+    buyButton.addTarget(self, action: #selector(BuyOverlayViewController.buyButtonDidGetTapped), for: .touchUpInside)
     containerView.addSubview(buyButton)
   }
 
@@ -83,6 +83,6 @@ class BuyOverlayViewController: MobilePlayerOverlayViewController {
 
   func buyButtonDidGetTapped() {
     guard let buyLink = buyLink else { return }
-    UIApplication.shared().openURL(buyLink)
+    UIApplication.shared.openURL(buyLink)
   }
 }

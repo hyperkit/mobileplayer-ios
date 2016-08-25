@@ -22,7 +22,7 @@ public class MobilePlayerConfig {
 
   /// Initializes with default values.
   public convenience init() {
-    self.init(dictionary: [String: AnyObject]())
+    self.init(dictionary: [String: Any]())
   }
 
   /// Initializes using a configuration JSON file.
@@ -30,10 +30,9 @@ public class MobilePlayerConfig {
   /// - parameters:
   ///   - fileURL: URL indicating the location of the configuration file.
   public convenience init(fileURL: URL) {
-    if let
-      jsonString = (try? String(contentsOfURL: fileURL, encoding: String.Encoding.utf8)),
-      jsonData = jsonString.data(using: String.Encoding.utf8),
-      dictionary = (try? JSONSerialization.jsonObject(with: jsonData, options: [])) as? [String: AnyObject] {
+    if let jsonString = (try? String.init(contentsOf: fileURL, encoding: .utf8)),
+      let jsonData = jsonString.data(using: String.Encoding.utf8),
+      let dictionary = (try? JSONSerialization.jsonObject(with: jsonData, options: [])) as? [String: Any] {
         self.init(dictionary: dictionary)
     } else {
       self.init()
@@ -48,20 +47,20 @@ public class MobilePlayerConfig {
   ///
   /// - parameters:
   ///   - dictionary: Configuration dictionary.
-  public init(dictionary: [String: AnyObject]) {
-    if let watermarkDictionary = dictionary["watermark"] as? [String: AnyObject] {
+  public init(dictionary: [String: Any]) {
+    if let watermarkDictionary = dictionary["watermark"] as? [String: Any] {
       watermarkConfig = WatermarkConfig(dictionary: watermarkDictionary)
     } else {
       watermarkConfig = nil
     }
 
-    if let topBarDictionary = dictionary["topBar"] as? [String: AnyObject] {
+    if let topBarDictionary = dictionary["topBar"] as? [String: Any] {
       topBarConfig = BarConfig(dictionary: topBarDictionary)
     } else {
       topBarConfig = BarConfig()
     }
 
-    if let bottomBarDictionary = dictionary["bottomBar"] as? [String: AnyObject] {
+    if let bottomBarDictionary = dictionary["bottomBar"] as? [String: Any] {
       bottomBarConfig = BarConfig(dictionary: bottomBarDictionary)
     } else {
       bottomBarConfig = BarConfig()

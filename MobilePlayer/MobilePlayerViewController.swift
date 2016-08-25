@@ -70,8 +70,8 @@ public class MobilePlayerViewController: MPMoviePlayerViewController {
   private var previousStatusBarHiddenValue: Bool!
   private var previousStatusBarStyle: UIStatusBarStyle!
   private var isFirstPlay = true
-  private var seeking = false
-  private var wasPlayingBeforeSeek = false
+  fileprivate var seeking = false
+  fileprivate var wasPlayingBeforeSeek = false
   private var playbackInterfaceUpdateTimer: Timer?
   private var hideControlsTimer: Timer?
 
@@ -152,9 +152,8 @@ public class MobilePlayerViewController: MPMoviePlayerViewController {
         guard let slf = self else {
           return
         }
-        if let
-          userInfo = (notification as NSNotification).userInfo as? [String: AnyObject],
-          error = userInfo["error"] as? NSError {
+        if let userInfo = (notification as NSNotification).userInfo,
+            let error = userInfo["error"] as? NSError {
             NotificationCenter.default.post(
               name: Notification.Name(rawValue: MobilePlayerDidEncounterErrorNotification),
               object: slf,
@@ -171,7 +170,7 @@ public class MobilePlayerViewController: MPMoviePlayerViewController {
   private func initializeControlsView() {
     (getViewForElementWithIdentifier("playback") as? Slider)?.delegate = self
 
-    (getViewForElementWithIdentifier("close") as? Button)?.addCallback(
+    _ = (getViewForElementWithIdentifier("close") as? Button)?.addCallback(
       { [weak self] in
         guard let slf = self else {
           return
@@ -186,7 +185,7 @@ public class MobilePlayerViewController: MPMoviePlayerViewController {
 
     if let actionButton = getViewForElementWithIdentifier("action") as? Button {
       actionButton.isHidden = true // Initially hidden until 1 or more `activityItems` are set.
-      actionButton.addCallback(
+      _ = actionButton.addCallback(
         { [weak self] in
           guard let slf = self else {
             return
@@ -196,7 +195,7 @@ public class MobilePlayerViewController: MPMoviePlayerViewController {
         forControlEvents: .touchUpInside)
     }
 
-    (getViewForElementWithIdentifier("play") as? ToggleButton)?.addCallback(
+    _ = (getViewForElementWithIdentifier("play") as? ToggleButton)?.addCallback(
       { [weak self] in
         guard let slf = self else {
           return
@@ -264,8 +263,8 @@ public class MobilePlayerViewController: MPMoviePlayerViewController {
   public override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     // Force hide status bar.
-    previousStatusBarHiddenValue = UIApplication.shared().isStatusBarHidden
-    UIApplication.shared().isStatusBarHidden = true
+    previousStatusBarHiddenValue = UIApplication.shared.isStatusBarHidden
+    UIApplication.shared.isStatusBarHidden = true
     setNeedsStatusBarAppearanceUpdate()
   }
 
@@ -282,7 +281,7 @@ public class MobilePlayerViewController: MPMoviePlayerViewController {
     super.viewWillDisappear(animated)
     stop()
     // Restore status bar appearance.
-    UIApplication.shared().isStatusBarHidden = previousStatusBarHiddenValue
+    UIApplication.shared.isStatusBarHidden = previousStatusBarHiddenValue
     setNeedsStatusBarAppearanceUpdate()
   }
 
@@ -354,7 +353,7 @@ public class MobilePlayerViewController: MPMoviePlayerViewController {
   /// button is pressed (if it exists). If content is playing, it is paused automatically at presentation and will
   /// continue after the controller is dismissed. Override `showContentActions()` if you want to change the button's
   /// behavior.
-  public var activityItems: [AnyObject]? {
+  public var activityItems: [Any]? {
     didSet {
       let isEmpty = activityItems?.isEmpty
       getViewForElementWithIdentifier("action")?.isHidden = (isEmpty == nil || isEmpty == true)
@@ -370,15 +369,15 @@ public class MobilePlayerViewController: MPMoviePlayerViewController {
   ///   - sourceView: On iPads the activity view controller is presented as a popover and a source view needs to
   ///     provided or a crash will occur.
   public func showContentActions(_ sourceView: UIView? = nil) {
-    guard let activityItems = activityItems where !activityItems.isEmpty else { return }
+    guard let activityItems = activityItems , !activityItems.isEmpty else { return }
     let wasPlaying = (state == .playing)
     moviePlayer.pause()
     let activityVC = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
     activityVC.excludedActivityTypes =  [
-      UIActivityTypeAssignToContact,
-      UIActivityTypeSaveToCameraRoll,
-      UIActivityTypePostToVimeo,
-      UIActivityTypeAirDrop
+      UIActivityType.assignToContact,
+      UIActivityType.saveToCameraRoll,
+      UIActivityType.postToVimeo,
+      UIActivityType.airDrop
     ]
     activityVC.completionWithItemsHandler = { activityType, completed, returnedItems, activityError in
       if wasPlaying {
@@ -453,7 +452,7 @@ public class MobilePlayerViewController: MPMoviePlayerViewController {
     _ overlayViewController: MobilePlayerOverlayViewController,
     startingAtTime presentationTime: TimeInterval? = nil,
     forDuration showDuration: TimeInterval? = nil) {
-      if let presentationTime = presentationTime, showDuration = showDuration {
+      if let presentationTime = presentationTime, let showDuration = showDuration {
         timedOverlays.append(TimedOverlayInfo(
           startTime: presentationTime,
           duration: showDuration,
@@ -495,7 +494,7 @@ public class MobilePlayerViewController: MPMoviePlayerViewController {
       self.title = self.title ?? videoInfo.title
       if let
         previewImageURLString = videoInfo.previewImageURL,
-        previewImageURL = URL(string: previewImageURLString) {
+        let previewImageURL = URL(string: previewImageURLString) {
           URLSession.shared.dataTask(with: previewImageURL) { data, response, error in
             guard let data = data else { return }
             DispatchQueue.main.async {
@@ -587,7 +586,7 @@ public class MobilePlayerViewController: MPMoviePlayerViewController {
       playButton?.toggled = false
       hideControlsTimer?.invalidate()
       controlsView.controlsHidden = false
-      if let pauseOverlayViewController = pauseOverlayViewController where (state == .paused && !seeking) {
+      if let pauseOverlayViewController = pauseOverlayViewController , (state == .paused && !seeking) {
         showOverlayViewController(pauseOverlayViewController)
       }
     }
@@ -598,7 +597,7 @@ public class MobilePlayerViewController: MPMoviePlayerViewController {
     if !currentTime.isNormal {
       return
     }
-    DispatchQueue.global(attributes: DispatchQueue.GlobalAttributes.qosDefault).async {
+    DispatchQueue.global(qos: .default).async {
       for timedOverlayInfo in self.timedOverlays {
         if timedOverlayInfo.startTime <= currentTime && currentTime <= timedOverlayInfo.startTime + timedOverlayInfo.duration {
           if timedOverlayInfo.overlay.parent == nil {
